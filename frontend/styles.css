@@ -1,0 +1,86 @@
+/* Base Reset */
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: whitesmoke;
+  padding: 20px;
+  color: #333;
+}
+
+section {
+    border-bottom: 1px solid lightgray;
+    padding: 50px;
+    padding-top: 250px;
+    padding-bottom: 250px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-post {
+    background-color: whitesmoke;
+}
+
+textarea, button {
+    font-family: Arial, sans-serif;
+    margin: 10px;
+    text-align: center;
+}
+
+.popular-topics {
+    flex-direction: row;
+    align-items: left;
+    text-align: left;
+}
+
+.column {
+    /* background-color: lightsalmon; uncomment to debug container */
+    margin: auto;
+    justify-content: left;
+    align-items: left;
+    padding: 20px;
+    text-align: left;
+}
+
+.column > h1 {
+    font-size: 40px;
+}
+
+.column:last-child {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.topic-block, .post {
+    /* background-color: green; */
+    margin: 20px;
+    padding: 20px;
+    text-align: left;
+    border-style: groove;
+    justify-items: left;
+}
+
+.topic-block > h5 {
+    color: gray;
+}
+
+.recent-posts {
+    background-color: green;
+    display: flex;
+}
+
+.post {
+    max-width: 100%;
+}
+
+
+
+  @media only screen and (max-width: 1000px) {
+    .popular-topics {
+        flex-direction: column;
+    }
+  }
