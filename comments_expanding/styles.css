@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    padding: 20px;
+  }
+  
+  .comment-section {
+    max-width: 700px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  
+  .comment {
+    border-left: 2px solid #ccc;
+    padding-left: 10px;
+    margin: 10px 0;
+    position: relative;
+  }
+  
+  .comment p {
+    margin: 5px 0;
+  }
+  
+  .replies {
+    margin-left: 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height; 
+  }
+  
+  .replies.expanded {
+    max-height: 1000px; /* you can adjust this as needed */
+  }
+  
+  .toggle-replies {
+    font-size: 14px;
+    background: none;
+    border: none;
+    color: #007BFF;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 4px;
+  }
+
+  .reply-form {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .reply-form input {
+    flex: 1;
+    padding: 5px;
+  }
+  
+  .reply-form button {
+    padding: 5px 10px;
+  }

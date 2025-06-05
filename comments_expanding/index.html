@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nested Replies With Input</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="comment-section">
+    <div class="comment">
+      <p>This is a top-level comment.</p>
+      <button class="toggle-replies">Show Replies</button>
+      <button class="reply-btn">Reply</button>
+      <div class="replies">
+        <div class="comment">
+          <p>This is a reply.</p>
+          <button class="toggle-replies">Show Replies</button>
+          <button class="reply-btn">Reply</button>
+          <div class="replies">
+            <div class="comment">
+              <p>This is a nested reply.</p>
+              <button class="reply-btn">Reply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
