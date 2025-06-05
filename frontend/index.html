@@ -1,74 +1,623 @@
-<!DOCTYPE html5>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width">
-        <link href="styles.css" rel="stylesheet" >
-    </head>
-    <body>
-        <header>
-            header
-        </header>
-        <main>
-            <!-- User Post -->
-            <section class="user-post">
-                <h1> Welcome to the Forum </h1>
-                <p> Join discussions, share your thoughts, and connect with others. </p>
-                <textarea placeholder="What do you want to discuss?"></textarea>
-                <button> Post </button>
-            </section>
-            <!-- Popular Topics -->
-            <section class="popular-topics">
-                <div class="column">
-                    <h1> Popular Topics </h1>
-                    <p> Catch up on trending discussions </p>
-                </div>
-                <div class="column">
-                    <div class="topic-block">
-                        <h2> The Rise of AI </h2>
-                        <h5> Exploring the impact </h5>
-                        <p> Join in on the conversation about artificial intelligence and its effects on society. </p>
-                    </div>
-                    <div class="topic-block">
-                        <h2> Healthy Living Tips </h2>
-                        <h5> Wellness and diet </h5>
-                        <p> What are your go-to tips for staying healthy? </p>
-                    </div>
-                    <div class="topic-block">
-                        <h2> Latest in Gaming </h2>
-                        <h5> What games are you playing? </h5>
-                        <p> Discuss the latest releases and game mechanics. </p>
-                    </div>
-                </div>
-            </section>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Forum</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-            <!-- Recent Posts -->
-            <section class="recent-posts">
-                <h2> Recent Posts </h2>
-                <p> See what users are sharing </p>
-                <div class="post">
-                    <div class="user-section"></div>
-                    <div class="image-section"></div>
-                    <div class="caption-section"></div>
-                    <div class="tag-section"></div>
-                </div>
-                <div class="post">
-                    <div class="post-section">
-                        <img src="blueberry cat.jpg">
-                        <p> user1 </p>
-                    </div>
-                    <div class="post-section">
-                        <img src="blueberry cat.jpg">
-                    </div>
-                </div>
-                <div class="post">
-                    post
-                </div>
-            </section>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* User Post Section */
+        .user-post {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .user-post h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .user-post p {
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .post-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        /* Popular Topics */
+        .popular-topics {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .popular-topics .column:first-child {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .popular-topics h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .popular-topics p {
+            color: #6c757d;
+        }
+
+        .topic-block {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .topic-block h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .topic-block h5 {
+            color: #007bff;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .topic-block p {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        /* Recent Posts */
+        .recent-posts {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .recent-posts h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .recent-posts > p {
+            color: #6c757d;
+            margin-bottom: 30px;
+        }
+
+        .post {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.2s ease;
+        }
+
+        .post:hover {
+            transform: translateY(-2px);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .post-content {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: #e9ecef;
+            color: #007bff;
+        }
+
+        .delete-btn:hover {
+            background: #f8d7da !important;
+            color: #dc3545 !important;
+        }
+
+        .comments-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .comment {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .collapsed {
+            display: none;
+        }
+
+        .file-input {
+            border: 2px dashed #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .file-input:hover {
+            border-color: #007bff;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+        }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .post-image {
+            max-width: 400px;
+            max-height: 300px;
+            width: auto;
+            height: auto;
+            border-radius: 8px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+
+        footer {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .popular-topics {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <main>
+        <!-- User Post Section -->
+        <section class="user-post">
+            <h1>Welcome to the Forum</h1>
+            <p>Join discussions, share your thoughts, and connect with others</p>
             
-        </main>
-        <footer>
-            footer
-        </footer>
-    </body>
+            <form id="postForm" class="post-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="author">Your Name</label>
+                    <input type="text" id="author" name="author" required placeholder="Enter your name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required placeholder="What's your post about?">
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">Content</label>
+                    <textarea id="content" name="content" required placeholder="Share your thoughts..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="image">Image (optional)</label>
+                    <input type="file" id="image" name="image" accept="image/*" class="file-input">
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                
+                <button type="submit" id="submitBtn">Create Post</button>
+            </form>
+            
+            <div id="formMessage"></div>
+        </section>
+
+        <!-- Popular Topics -->
+        <section class="popular-topics">
+            <div class="column">
+                <h1>Popular Topics</h1>
+                <p>Catch up on trending discussions</p>
+            </div>
+            <div class="column">
+                <div class="topic-block">
+                    <h2>The Rise of AI</h2>
+                    <h5>Exploring the impact</h5>
+                    <p>Join in on the conversation about artificial intelligence and its effects on society.</p>
+                </div>
+                <div class="topic-block">
+                    <h2>Healthy Living Tips</h2>
+                    <h5>Wellness and diet</h5>
+                    <p>What are your go-to tips for staying healthy?</p>
+                </div>
+                <div class="topic-block">
+                    <h2>Latest in Gaming</h2>
+                    <h5>What games are you playing?</h5>
+                    <p>Discuss the latest releases and game mechanics.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Posts -->
+        <section class="recent-posts">
+            <h2>Recent Posts</h2>
+            <p>See what users are sharing</p>
+            
+            <div id="postsLoading" class="loading">Loading posts...</div>
+            <div id="postsList"></div>
+        </section>
+    </main>
+
+    <script>
+        class ForumApp {
+            constructor() {
+                this.apiBase = window.location.origin + '/api';
+                this.posts = [];
+                
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadPosts();
+            }
+
+            bindEvents() {
+                document.getElementById('postForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.createPost();
+                });
+
+                // Image preview functionality
+                document.getElementById('image').addEventListener('change', (e) => {
+                    this.previewImage(e.target.files[0]);
+                });
+            }
+
+            previewImage(file) {
+                const previewDiv = document.getElementById('imagePreview');
+                
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        previewDiv.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview" class="preview-image">
+                            <p style="font-size: 14px; color: #6c757d; margin-top: 8px;">
+                                ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
+                            </p>
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    previewDiv.innerHTML = '';
+                }
+            }
+
+            async loadPosts() {
+                try {
+                    const response = await fetch(`${this.apiBase}/posts`);
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        this.posts = data.posts;
+                        this.renderPosts();
+                    } else {
+                        throw new Error(data.error || 'Failed to load posts');
+                    }
+                } catch (error) {
+                    console.error('Error loading posts:', error);
+                    document.getElementById('postsLoading').innerHTML = `
+                        <div class="error">Failed to load posts: ${error.message}</div>
+                    `;
+                }
+            }
+
+            async createPost() {
+                const form = document.getElementById('postForm');
+                const submitBtn = document.getElementById('submitBtn');
+                const messageDiv = document.getElementById('formMessage');
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating...';
+
+                try {
+                    const formData = new FormData(form);
+
+                    const response = await fetch(`${this.apiBase}/posts`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        messageDiv.innerHTML = '<div class="success">Post created successfully!</div>';
+                        form.reset();
+                        document.getElementById('imagePreview').innerHTML = '';
+                        this.posts.unshift(data.post);
+                        this.renderPosts();
+                        
+                        setTimeout(() => {
+                            messageDiv.innerHTML = '';
+                        }, 3000);
+                    } else {
+                        throw new Error(data.error || 'Failed to create post');
+                    }
+                } catch (error) {
+                    console.error('Error creating post:', error);
+                    messageDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create Post';
+                }
+            }
+
+            renderPosts() {
+                const postsContainer = document.getElementById('postsList');
+                const loadingDiv = document.getElementById('postsLoading');
+                
+                loadingDiv.style.display = 'none';
+
+                if (this.posts.length === 0) {
+                    postsContainer.innerHTML = '<div class="loading">No posts yet. Be the first to create one!</div>';
+                    return;
+                }
+
+                postsContainer.innerHTML = this.posts.map(post => this.renderPost(post)).join('');
+            }
+
+            renderPost(post) {
+                const createdDate = new Date(post.created_at).toLocaleDateString();
+                
+                const imageHtml = post.image_url ? 
+                    `<img src="${post.image_url}" alt="Post image" class="post-image">` : '';
+                
+                return `
+                    <div class="post" data-post-id="${post._id}">
+                        <div class="post-header">
+                            <h3 class="post-title">${this.escapeHtml(post.title)}</h3>
+                            <div class="post-meta">
+                                <span>By ${this.escapeHtml(post.author)}</span>
+                                <span>•</span>
+                                <span>${createdDate}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="post-content">
+                            ${this.escapeHtml(post.content).replace(/\n/g, '<br>')}
+                            ${imageHtml}
+                        </div>
+                        
+                        <div class="post-actions">
+                            <button class="action-btn delete-btn" onclick="forum.deletePost('${post._id}')" style="color: #dc3545;">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            async deletePost(postId) {
+                if (!confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${this.apiBase}/posts/${postId}`, {
+                        method: 'DELETE'
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        this.posts = this.posts.filter(post => post._id !== postId);
+                        
+                        this.renderPosts();
+                        
+                        const messageDiv = document.getElementById('formMessage');
+                        messageDiv.innerHTML = '<div class="success">Post deleted successfully!</div>';
+                        
+                        setTimeout(() => {
+                            messageDiv.innerHTML = '';
+                        }, 3000);
+                    } else {
+                        throw new Error(data.error || 'Failed to delete post');
+                    }
+                } catch (error) {
+                    console.error('Error deleting post:', error);
+                    alert(`Error deleting post: ${error.message}`);
+                }
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        const forum = new ForumApp();
+    </script>
+</body>
 </html>
