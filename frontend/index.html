@@ -535,47 +535,60 @@
 
             renderPosts() {
                 const postsContainer = document.getElementById('postsList');
-                const loadingDiv = document.getElementById('postsLoading');
-                
-                loadingDiv.style.display = 'none';
+    const loadingDiv = document.getElementById('postsLoading');
 
-                if (this.posts.length === 0) {
-                    postsContainer.innerHTML = '<div class="loading">No posts yet. Be the first to create one!</div>';
-                    return;
-                }
+    loadingDiv.style.display = 'none';
 
-                postsContainer.innerHTML = this.posts.map(post => this.renderPost(post)).join('');
+    if (this.posts.length === 0) {
+        postsContainer.innerHTML = '<div class="loading">No posts yet. Be the first to create one!</div>';
+        return;
+    }
+
+    postsContainer.innerHTML = this.posts.map(post => this.renderPost(post)).join('');
+
+    // 🔽 Render comments for each post
+    this.posts.forEach(post => renderComments(post._id));
             }
 
             renderPost(post) {
                 const createdDate = new Date(post.created_at).toLocaleDateString();
-                
-                const imageHtml = post.image_url ? 
-                    `<img src="${post.image_url}" alt="Post image" class="post-image">` : '';
-                
-                return `
-                    <div class="post" data-post-id="${post._id}">
-                        <div class="post-header">
-                            <h3 class="post-title">${this.escapeHtml(post.title)}</h3>
-                            <div class="post-meta">
-                                <span>By ${this.escapeHtml(post.author)}</span>
-                                <span>•</span>
-                                <span>${createdDate}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="post-content">
-                            ${this.escapeHtml(post.content).replace(/\n/g, '<br>')}
-                            ${imageHtml}
-                        </div>
-                        
-                        <div class="post-actions">
-                            <button class="action-btn delete-btn" onclick="forum.deletePost('${post._id}')" style="color: #dc3545;">
-                                🗑️ Delete
-                            </button>
-                        </div>
-                    </div>
-                `;
+
+    const imageHtml = post.image_url
+        ? `<img src="${post.image_url}" alt="Post image" class="post-image">`
+        : '';
+
+        return `
+        <div class="post" data-post-id="${post._id}">
+            <div class="post-header">
+                <h3 class="post-title">${this.escapeHtml(post.title)}</h3>
+                <div class="post-meta">
+                    <span>By ${this.escapeHtml(post.author)}</span>
+                    <span>•</span>
+                    <span>${createdDate}</span>
+                </div>
+            </div>
+
+            <div class="post-content">
+                ${this.escapeHtml(post.content).replace(/\n/g, '<br>')}
+                ${imageHtml}
+            </div>
+
+            <div class="post-actions">
+                <button class="action-btn delete-btn" onclick="forum.deletePost('${post._id}')" style="color: #dc3545;">
+                    🗑️ Delete
+                </button>
+            </div>
+
+            <div id="comments-for-${post._id}" class="comments-section">
+                <div class="comments-container"></div>
+                <div class="comment-form">
+                    <input type="text" placeholder="Your name" class="comment-author-input" data-parent="">
+                    <input type="text" placeholder="Write a comment..." class="comment-text-input" data-parent="">
+                    <button onclick="submitComment('${post._id}')">Submit</button>
+                </div>
+            </div>
+        </div>
+    `;
             }
 
             async deletePost(postId) {
@@ -618,6 +631,114 @@
         }
 
         const forum = new ForumApp();
+        const commentData = {}; // { postId: [ {id, parentId, author, text, timestamp}, ... ] }
+
+        function submitComment(postId, parentId = null) {
+            const postSection = document.getElementById(`comments-for-${postId}`);
+            const authorInput = postSection.querySelector(`.comment-author-input[data-parent='${parentId || ''}']`);
+            const textInput = postSection.querySelector(`.comment-text-input[data-parent='${parentId || ''}']`);
+
+            const author = authorInput.value.trim();
+            const text = textInput.value.trim();
+
+            if (!author || !text) return;
+
+            const comment = {
+                id: crypto.randomUUID(),
+                parentId,
+                author,
+                text,
+                timestamp: new Date().toISOString()
+            };
+
+            if (!commentData[postId]) commentData[postId] = [];
+            commentData[postId].push(comment);
+
+            authorInput.value = '';
+            textInput.value = '';
+
+            renderComments(postId);
+            }
+
+            function renderComments(postId) {
+                const container = document.querySelector(`#comments-for-${postId} .comments-container`);
+  container.innerHTML = '';
+
+  const comments = commentData[postId] || [];
+
+  function renderNested(parentId, depth = 0) {
+    return comments
+      .filter(c => c.parentId === parentId)
+      .map(c => {
+        const hasReplies = comments.some(child => child.parentId === c.id);
+        const replyBlockId = `replies-${c.id}`;
+        return `
+          <div class="comment" style="margin-left: ${depth * 20}px;">
+            <div class="comment-header">
+              <span class="comment-author">${c.author}</span>
+              <span class="comment-time">${new Date(c.timestamp).toLocaleString()}</span>
+            </div>
+            <p>${c.text}</p>
+           <div class="comment-actions" style="display: flex; gap: 10px; margin-top: 8px;">
+  <button class="action-btn" onclick="toggleReplyForm('${postId}', '${c.id}')">Reply</button>
+  ${hasReplies ? `<button class="action-btn" onclick="toggleReplies('${replyBlockId}', this)">Hide Replies</button>` : ''}
+  <button class="action-btn delete-btn" onclick="deleteComment('${postId}', '${c.id}')" style="color: #dc3545;">
+    🗑️ Delete
+  </button>
+</div>
+            <div class="comment-form collapsed" id="reply-form-${c.id}">
+              <input type="text" placeholder="Your name" class="comment-author-input" data-parent="${c.id}">
+              <input type="text" placeholder="Write a reply..." class="comment-text-input" data-parent="${c.id}">
+              <button onclick="submitComment('${postId}', '${c.id}')">Submit</button>
+            </div>
+            <div id="${replyBlockId}">
+              ${renderNested(c.id, depth + 1)}
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+  }
+
+  container.innerHTML = renderNested(null);
+}
+
+function toggleReplies(replyBlockId, button) {
+  const replySection = document.getElementById(replyBlockId);
+  if (!replySection) return;
+  replySection.classList.toggle('collapsed');
+  button.textContent = replySection.classList.contains('collapsed') ? 'Show Replies' : 'Hide Replies';
+    }
+
+    function toggleReplyForm(postId, commentId) {
+      const replyForm = document.getElementById(`reply-form-${commentId}`);
+      if (replyForm) replyForm.classList.toggle('collapsed');
+    }
+
+    function toggleReplies(replyBlockId, button) {
+  const replySection = document.getElementById(replyBlockId);
+  if (!replySection) return;
+  replySection.classList.toggle('collapsed');
+  button.textContent = replySection.classList.contains('collapsed') ? 'Show Replies' : 'Hide Replies';
+}
+
+function deleteComment(postId, commentId) {
+  if (!confirm('Are you sure you want to delete this comment?')) return;
+
+  if (!commentData[postId]) return;
+
+  // Recursively delete this comment and its replies
+  function deleteRecursive(id) {
+    const children = commentData[postId].filter(c => c.parentId === id);
+    children.forEach(child => deleteRecursive(child.id));
+    const index = commentData[postId].findIndex(c => c.id === id);
+    if (index !== -1) commentData[postId].splice(index, 1);
+  }
+
+  deleteRecursive(commentId);
+  renderComments(postId);
+}
+        
     </script>
 </body>
 </html>
