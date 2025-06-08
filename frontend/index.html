@@ -658,85 +658,79 @@
             textInput.value = '';
 
             renderComments(postId);
-            }
+        }
 
-            function renderComments(postId) {
-                const container = document.querySelector(`#comments-for-${postId} .comments-container`);
-  container.innerHTML = '';
+        function renderComments(postId) {
+            const container = document.querySelector(`#comments-for-${postId} .comments-container`);
+            container.innerHTML = '';
 
-  const comments = commentData[postId] || [];
+            const comments = commentData[postId] || [];
 
-  function renderNested(parentId, depth = 0) {
-    return comments
-      .filter(c => c.parentId === parentId)
-      .map(c => {
-        const hasReplies = comments.some(child => child.parentId === c.id);
-        const replyBlockId = `replies-${c.id}`;
-        return `
-          <div class="comment" style="margin-left: ${depth * 20}px;">
-            <div class="comment-header">
-              <span class="comment-author">${c.author}</span>
-              <span class="comment-time">${new Date(c.timestamp).toLocaleString()}</span>
-            </div>
-            <p>${c.text}</p>
-            <div class="comment-actions" style="display: flex; gap: 10px; margin-top: 8px;">
-                <button class="action-btn" onclick="toggleReplyForm('${postId}', '${c.id}')">Reply</button>
-                ${hasReplies ? `<button class="action-btn" onclick="toggleReplies('${replyBlockId}', this)">Hide Replies</button>` : ''}
-                <button class="action-btn delete-btn" onclick="deleteComment('${postId}', '${c.id}')" style="color: #dc3545;">
-                🗑️ Delete
-                </button>
-            </div>
-            <div class="comment-form collapsed" id="reply-form-${c.id}">
-                <input type="text" placeholder="Your name" class="comment-author-input" data-parent="${c.id}">
-                <input type="text" placeholder="Write a reply..." class="comment-text-input" data-parent="${c.id}">
-                <button onclick="submitComment('${postId}', '${c.id}')">Submit</button>
-            </div>
-            <div id="${replyBlockId}">
-              ${renderNested(c.id, depth + 1)}
-            </div>
-          </div>
-        `;
-      })
-      .join('');
-  }
+            function renderNested(parentId, depth = 0) {
+            return comments
+            .filter(c => c.parentId === parentId)
+            .map(c => {
+                const hasReplies = comments.some(child => child.parentId === c.id);
+                const replyBlockId = `replies-${c.id}`;
+                return `
+                    <div class="comment" style="margin-left: ${depth * 20}px;">
+                    <div class="comment-header">
+                    <span class="comment-author">${c.author}</span>
+                    <span class="comment-time">${new Date(c.timestamp).toLocaleString()}</span>
+                    </div>
+                        <p>${c.text}</p>
+                        <div class="comment-actions" style="display: flex; gap: 10px; margin-top: 8px;">
+                        <button class="action-btn" onclick="toggleReplyForm('${postId}', '${c.id}')">Reply</button>
+                        ${hasReplies ? `<button class="action-btn" onclick="toggleReplies('${replyBlockId}', this)">Hide Replies</button>` : ''}
+                        <button class="action-btn delete-btn" onclick="deleteComment('${postId}', '${c.id}')" style="color: #dc3545;">
+                        🗑️ Delete
+                        </button>
+                    </div>
+                    <div class="comment-form collapsed" id="reply-form-${c.id}">
+                    <input type="text" placeholder="Your name" class="comment-author-input" data-parent="${c.id}">
+                    <input type="text" placeholder="Write a reply..." class="comment-text-input" data-parent="${c.id}">
+                    <button onclick="submitComment('${postId}', '${c.id}')">Submit</button>
+                    </div>
+                    <div id="${replyBlockId}">
+                    ${renderNested(c.id, depth + 1)}
+                    </div>
+                    </div>
+                    `;
+            })
+            .join('');
+        }
 
-  container.innerHTML = renderNested(null);
-}
+    container.innerHTML = renderNested(null);
+    }
 
 function toggleReplies(replyBlockId, button) {
-  const replySection = document.getElementById(replyBlockId);
-  if (!replySection) return;
-  replySection.classList.toggle('collapsed');
-  button.textContent = replySection.classList.contains('collapsed') ? 'Show Replies' : 'Hide Replies';
-    }
-
-    function toggleReplyForm(postId, commentId) {
-      const replyForm = document.getElementById(`reply-form-${commentId}`);
-      if (replyForm) replyForm.classList.toggle('collapsed');
-    }
-
-    function toggleReplies(replyBlockId, button) {
-  const replySection = document.getElementById(replyBlockId);
-  if (!replySection) return;
-  replySection.classList.toggle('collapsed');
-  button.textContent = replySection.classList.contains('collapsed') ? 'Show Replies' : 'Hide Replies';
+    const replySection = document.getElementById(replyBlockId);
+    if (!replySection) return;
+    replySection.classList.toggle('collapsed');
+    button.textContent = replySection.classList.contains('collapsed') ? 'Show Replies' : 'Hide Replies';
 }
 
+function toggleReplyForm(postId, commentId) {
+    const replyForm = document.getElementById(`reply-form-${commentId}`);
+    if (replyForm) replyForm.classList.toggle('collapsed');
+}
+
+
 function deleteComment(postId, commentId) {
-  if (!confirm('Are you sure you want to delete this comment?')) return;
+    if (!confirm('Are you sure you want to delete this comment?')) return;
 
-  if (!commentData[postId]) return;
+    if (!commentData[postId]) return;
 
-  // Recursively delete this comment and its replies
-  function deleteRecursive(id) {
-    const children = commentData[postId].filter(c => c.parentId === id);
-    children.forEach(child => deleteRecursive(child.id));
-    const index = commentData[postId].findIndex(c => c.id === id);
-    if (index !== -1) commentData[postId].splice(index, 1);
-  }
+    // Recursively delete this comment and its replies
+    function deleteRecursive(id) {
+        const children = commentData[postId].filter(c => c.parentId === id);
+        children.forEach(child => deleteRecursive(child.id));
+        const index = commentData[postId].findIndex(c => c.id === id);
+        if (index !== -1) commentData[postId].splice(index, 1);
+    }
 
-  deleteRecursive(commentId);
-  renderComments(postId);
+    deleteRecursive(commentId);
+    renderComments(postId);
 }
         
     </script>
