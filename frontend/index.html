@@ -679,17 +679,17 @@
               <span class="comment-time">${new Date(c.timestamp).toLocaleString()}</span>
             </div>
             <p>${c.text}</p>
-           <div class="comment-actions" style="display: flex; gap: 10px; margin-top: 8px;">
-  <button class="action-btn" onclick="toggleReplyForm('${postId}', '${c.id}')">Reply</button>
-  ${hasReplies ? `<button class="action-btn" onclick="toggleReplies('${replyBlockId}', this)">Hide Replies</button>` : ''}
-  <button class="action-btn delete-btn" onclick="deleteComment('${postId}', '${c.id}')" style="color: #dc3545;">
-    🗑️ Delete
-  </button>
-</div>
+            <div class="comment-actions" style="display: flex; gap: 10px; margin-top: 8px;">
+                <button class="action-btn" onclick="toggleReplyForm('${postId}', '${c.id}')">Reply</button>
+                ${hasReplies ? `<button class="action-btn" onclick="toggleReplies('${replyBlockId}', this)">Hide Replies</button>` : ''}
+                <button class="action-btn delete-btn" onclick="deleteComment('${postId}', '${c.id}')" style="color: #dc3545;">
+                🗑️ Delete
+                </button>
+            </div>
             <div class="comment-form collapsed" id="reply-form-${c.id}">
-              <input type="text" placeholder="Your name" class="comment-author-input" data-parent="${c.id}">
-              <input type="text" placeholder="Write a reply..." class="comment-text-input" data-parent="${c.id}">
-              <button onclick="submitComment('${postId}', '${c.id}')">Submit</button>
+                <input type="text" placeholder="Your name" class="comment-author-input" data-parent="${c.id}">
+                <input type="text" placeholder="Write a reply..." class="comment-text-input" data-parent="${c.id}">
+                <button onclick="submitComment('${postId}', '${c.id}')">Submit</button>
             </div>
             <div id="${replyBlockId}">
               ${renderNested(c.id, depth + 1)}
